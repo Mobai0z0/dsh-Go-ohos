@@ -3476,6 +3476,36 @@ abstract class L10n {
   /// **'未能确认操作结果。先核实结果；已派发的命令不要自动重试。'**
   String get androidShellErrorUnknown;
 
+  /// No description provided for @androidBackgroundProtectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'增强保活'**
+  String get androidBackgroundProtectionTitle;
+
+  /// No description provided for @androidBackgroundProtectionAudioHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'有本机任务时在后台播放静音音频，可能增加耗电。'**
+  String get androidBackgroundProtectionAudioHint;
+
+  /// No description provided for @androidBackgroundProtectionLocationHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用粗略位置，可能增加耗电；不保存或发送坐标。关闭后停止定位，但不撤回系统权限。'**
+  String get androidBackgroundProtectionLocationHint;
+
+  /// No description provided for @androidBackgroundProtectionNeedsLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'尚未授予位置权限。点此打开 App 的系统设置，在「权限」中允许访问位置。'**
+  String get androidBackgroundProtectionNeedsLocation;
+
+  /// No description provided for @androidBackgroundProtectionNeedsAlways.
+  ///
+  /// In zh, this message translates to:
+  /// **'后台定位尚未生效。点此打开 App 的系统设置，在「权限」中将位置设为“始终允许”。'**
+  String get androidBackgroundProtectionNeedsAlways;
+
   /// No description provided for @backgroundProtectionDescription.
   ///
   /// In zh, this message translates to:
@@ -9320,6 +9350,12 @@ abstract class L10n {
   /// **'这句话没送出去，要不要再说一次？'**
   String get companionSendFailed;
 
+  /// No description provided for @companionAgentRetryClosed.
+  ///
+  /// In zh, this message translates to:
+  /// **'刚才那件事我可能已经动手了，怕做两遍。你先在「交代的事」里看一眼，再告诉我要不要接着来？'**
+  String get companionAgentRetryClosed;
+
   /// No description provided for @companionLogTitle.
   ///
   /// In zh, this message translates to:
@@ -9728,6 +9764,72 @@ abstract class L10n {
   /// **'她记得的事'**
   String get companionMemoryTitle;
 
+  /// No description provided for @companionMemoryCard.
+  ///
+  /// In zh, this message translates to:
+  /// **'卡片'**
+  String get companionMemoryCard;
+
+  /// No description provided for @companionMemoryPerson.
+  ///
+  /// In zh, this message translates to:
+  /// **'人物档案'**
+  String get companionMemoryPerson;
+
+  /// No description provided for @companionMemoryDiary.
+  ///
+  /// In zh, this message translates to:
+  /// **'日记'**
+  String get companionMemoryDiary;
+
+  /// No description provided for @companionMemoryImpression.
+  ///
+  /// In zh, this message translates to:
+  /// **'她对你的印象'**
+  String get companionMemoryImpression;
+
+  /// No description provided for @companionMemorySearchTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'记忆检索'**
+  String get companionMemorySearchTitle;
+
+  /// No description provided for @companionMemorySearchDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载约24 MB的模型，用手机本地查找意思相近的记忆。'**
+  String get companionMemorySearchDescription;
+
+  /// No description provided for @companionMemorySearchDownload.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载模型'**
+  String get companionMemorySearchDownload;
+
+  /// No description provided for @companionMemorySearchReady.
+  ///
+  /// In zh, this message translates to:
+  /// **'本地模型已就绪'**
+  String get companionMemorySearchReady;
+
+  /// No description provided for @companionMemorySearchDownloading.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在下载…'**
+  String get companionMemorySearchDownloading;
+
+  /// No description provided for @companionMemorySearchFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂时无法准备本地模型。可以重试下载。'**
+  String get companionMemorySearchFailed;
+
+  /// No description provided for @companionMemorySearchUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'此设备暂不支持本地记忆检索。'**
+  String get companionMemorySearchUnavailable;
+
   /// No description provided for @companionMemoryScope.
   ///
   /// In zh, this message translates to:
@@ -10103,26 +10205,38 @@ abstract class L10n {
   /// No description provided for @companionBond0.
   ///
   /// In zh, this message translates to:
-  /// **'刚认识'**
+  /// **'初识'**
   String get companionBond0;
 
   /// No description provided for @companionBond1.
   ///
   /// In zh, this message translates to:
-  /// **'渐渐熟悉'**
+  /// **'熟悉'**
   String get companionBond1;
 
   /// No description provided for @companionBond2.
   ///
   /// In zh, this message translates to:
-  /// **'熟起来了'**
+  /// **'朋友'**
   String get companionBond2;
 
   /// No description provided for @companionBond3.
   ///
   /// In zh, this message translates to:
-  /// **'很亲近'**
+  /// **'亲近'**
   String get companionBond3;
+
+  /// No description provided for @companionBond4.
+  ///
+  /// In zh, this message translates to:
+  /// **'很亲'**
+  String get companionBond4;
+
+  /// No description provided for @companionBond5.
+  ///
+  /// In zh, this message translates to:
+  /// **'离不开'**
+  String get companionBond5;
 
   /// No description provided for @companionCloser1.
   ///
@@ -10141,6 +10255,18 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'以后也要常来哦，我会想你的。'**
   String get companionCloser3;
+
+  /// No description provided for @companionCloser4.
+  ///
+  /// In zh, this message translates to:
+  /// **'你在的时候，连安静待着都很开心。'**
+  String get companionCloser4;
+
+  /// No description provided for @companionCloser5.
+  ///
+  /// In zh, this message translates to:
+  /// **'不知不觉，已经很习惯有你在了。'**
+  String get companionCloser5;
 
   /// No description provided for @companionPatClose.
   ///
@@ -13104,6 +13230,12 @@ abstract class L10n {
   /// **'此前约定写出的表已找到；新的约定尚未完成。'**
   String get companionReceiptPriorResult;
 
+  /// No description provided for @companionLegacyConversation.
+  ///
+  /// In zh, this message translates to:
+  /// **'旧对话（角色未记录）'**
+  String get companionLegacyConversation;
+
   /// No description provided for @automaticDiagnosticsRecover.
   ///
   /// In zh, this message translates to:
@@ -15053,6 +15185,36 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'官方'**
   String get engineProvidersOfficial;
+
+  /// No description provided for @engineProvidersChatGptOfficial.
+  ///
+  /// In zh, this message translates to:
+  /// **'ChatGPT 官方订阅'**
+  String get engineProvidersChatGptOfficial;
+
+  /// No description provided for @engineSubscriptionReconnectAccount.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录原账号'**
+  String get engineSubscriptionReconnectAccount;
+
+  /// No description provided for @engineSubscriptionUseAnotherAccount.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用其他账号'**
+  String get engineSubscriptionUseAnotherAccount;
+
+  /// No description provided for @engineSubscriptionPlanNotEnabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'此授权无法使用 ChatGPT 订阅模型。'**
+  String get engineSubscriptionPlanNotEnabled;
+
+  /// No description provided for @engineSubscriptionRevocationUnconfirmed.
+  ///
+  /// In zh, this message translates to:
+  /// **'已在本机退出，但没能确认 OpenAI 已撤销授权。'**
+  String get engineSubscriptionRevocationUnconfirmed;
 
   /// No description provided for @engineProvidersSubscription.
   ///
@@ -25482,6 +25644,18 @@ abstract class L10n {
   /// **'收成小球，点按展开'**
   String get phoneAutoCollapseHint;
 
+  /// No description provided for @phoneEdgeGlow.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏幕边缘光效'**
+  String get phoneEdgeGlow;
+
+  /// No description provided for @phoneEdgeGlowHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'操控时屏幕四周的流光'**
+  String get phoneEdgeGlowHint;
+
   /// No description provided for @phoneDeveloperOptions.
   ///
   /// In zh, this message translates to:
@@ -34247,6 +34421,12 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'悬浮条,收起,悬浮球'**
   String get searchKwPhoneAutoCollapse;
+
+  /// No description provided for @searchKwPhoneEdgeGlow.
+  ///
+  /// In zh, this message translates to:
+  /// **'边缘光,光效,流光,特效,边框'**
+  String get searchKwPhoneEdgeGlow;
 
   /// No description provided for @searchKwPhoneReturn.
   ///
@@ -43542,6 +43722,18 @@ abstract class L10n {
   /// **'网页里不运行卡的脚本'**
   String get tavernIslandNoScripts;
 
+  /// No description provided for @tavernSPresetExternal.
+  ///
+  /// In zh, this message translates to:
+  /// **'让预设自己加载 SPreset'**
+  String get tavernSPresetExternal;
+
+  /// No description provided for @tavernSPresetExternalSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'默认用内置的 SPreset，不从预设作者的网站加载脚本；打开后改用预设自己加载的'**
+  String get tavernSPresetExternalSubtitle;
+
   /// No description provided for @tavernIslandNoScriptsSubtitle.
   ///
   /// In zh, this message translates to:
@@ -46319,6 +46511,18 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'接回了 {count} 段，其余的在对话列表里'**
   String tavernDeepSeekTaken(int count);
+
+  /// No description provided for @tavernIslandStoryWaiting.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在读取本条消息的数据…'**
+  String get tavernIslandStoryWaiting;
+
+  /// No description provided for @tavernIslandStoryFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'本条消息的数据读取失败：{reason}'**
+  String tavernIslandStoryFailed(String reason);
 
   /// No description provided for @tavernPacks.
   ///

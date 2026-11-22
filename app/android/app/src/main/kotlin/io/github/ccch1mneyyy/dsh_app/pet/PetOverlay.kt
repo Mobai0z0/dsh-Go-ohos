@@ -346,7 +346,10 @@ internal object PetOverlay {
         return mapOf(
             "enabled" to machine.enabled,
             "alwaysShow" to machine.alwaysShow,
-            "permission" to OverlayAccess.permission(a11y, canDraw, lastAdd).wire,
+            "permission" to OverlayAccess.permission(
+                a11y, canDraw, lastAdd,
+                a11yFailed = accessibilityRetry.remaining(PhoneA11yService.instance, now()) != null,
+            ).wire,
             "canDraw" to canDraw,
             "accessibility" to a11y,
             "snoozed" to machine.snoozed(now()),
@@ -581,7 +584,7 @@ internal object PetOverlay {
     private fun overlayHost(): OverlayHost = OverlayAccess.host(
         a11yConnected(), lastAdd,
         a11yFailed = accessibilityRetry.remaining(PhoneA11yService.instance, now()) != null,
-        canDraw = canDraw(),
+        canDraw = ::canDraw,
     )
 
     private fun canDraw(): Boolean = try { Settings.canDrawOverlays(app) } catch (_: Exception) { false }

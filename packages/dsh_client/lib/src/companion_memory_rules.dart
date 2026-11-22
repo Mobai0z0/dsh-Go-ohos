@@ -327,6 +327,11 @@ void _timeProposal(Object? value, String firstQuote, {required bool followup}) {
   }
 }
 
+/// Structured tools use the same three-key date and original-wording boundary.
+/// This validates a model proposal; it does not interpret a relative date.
+void validateMemoryEventTime(Object? value, {required String sourceText}) =>
+    _timeProposal(value, sourceText, followup: false);
+
 MemoryRow _object(Object? value) {
   if (value is! MemoryRow) throw const FormatException('Expected an object');
   return value;
@@ -447,6 +452,54 @@ String _memoryBlock(List<MemoryRow> cards) => jsonEncode({
   ],
 });
 
+/// Shared eligibility for lexical and vector ranking. Retrieval algorithms do
+/// not relax the stored source, status, expiry or explicit-topic conditions.
+bool isMemoryContextEligible(MemoryRow card, {required int nowMs, Set<String> explicitTopicIds = const {}}) {
+  if (card['scope'] != 'real' ||
+      card['eligible'] != true ||
+      card['status'] == 'withdrawn' ||
+      const ['cancelled', 'postponed'].contains(card['plan_state'])) {
+    return false;
+  }
+  // Older stored automatic rows can predate the proposal text boundary.
+  // Keep the exact same control-character contract as the v2 bridge.
+  if (_memoryControls.hasMatch(card['text']! as String)) return false;
+  final expiry = card['expires_at_ms'] as int?;
+  if (expiry != null && expiry <= nowMs) return false;
+  if (card['status'] == 'past' &&
+      ((card['evidence']! as List<Object?>).isEmpty ||
+          !_pastWording.hasMatch(normalizeMemoryText(card['text']! as String)))) {
+    return false;
+  }
+  return card['topic_mode'] != 'never' || explicitTopicIds.contains(card['topic_id']);
+}
+
+MemorySelection selectRankedMemoryContext(
+  List<MemoryRow> cards, {
+  required List<String> rankedIds,
+  required int nowMs,
+  required int controlRevision,
+  Set<String> explicitTopicIds = const {},
+  int limit = memoryContextLimit,
+}) {
+  if (limit < 1 || limit > memoryContextHardLimit) throw ArgumentError.value(limit, 'limit');
+  final available = {
+    for (final card in cards)
+      if (isMemoryContextEligible(card, nowMs: nowMs, explicitTopicIds: explicitTopicIds)) card['id'] as String: card,
+  };
+  final selected = <MemoryRow>[];
+  final ids = <String>{};
+  for (final id in rankedIds) {
+    if (selected.length == limit) break;
+    final card = available[id];
+    if (card == null || ids.contains(id)) continue;
+    if (_memoryBlock([...selected, card]).runes.length > memoryContextScalarLimit) continue;
+    selected.add(card);
+    ids.add(id);
+  }
+  return MemorySelection(block: _memoryBlock(selected), ids: ids.toList(), controlRevision: controlRevision);
+}
+
 MemorySelection selectMemoryContext(
   List<MemoryRow> cards, {
   required String input,
@@ -457,25 +510,9 @@ MemorySelection selectMemoryContext(
 }) {
   if (limit < 1 || limit > memoryContextHardLimit) throw ArgumentError.value(limit, 'limit');
   final query = normalizeMemoryText(input);
-  final eligible = cards.where((card) {
-    if (card['scope'] != 'real' ||
-        card['eligible'] != true ||
-        card['status'] == 'withdrawn' ||
-        const ['cancelled', 'postponed'].contains(card['plan_state'])) {
-      return false;
-    }
-    // Older stored automatic rows can predate the proposal text boundary.
-    // Keep the exact same control-character contract as the v2 bridge.
-    if (_memoryControls.hasMatch(card['text']! as String)) return false;
-    final expiry = card['expires_at_ms'] as int?;
-    if (expiry != null && expiry <= nowMs) return false;
-    if (card['status'] == 'past' &&
-        ((card['evidence']! as List<Object?>).isEmpty ||
-            !_pastWording.hasMatch(normalizeMemoryText(card['text']! as String)))) {
-      return false;
-    }
-    return card['topic_mode'] != 'never' || explicitTopicIds.contains(card['topic_id']);
-  }).toList();
+  final eligible = cards
+      .where((card) => isMemoryContextEligible(card, nowMs: nowMs, explicitTopicIds: explicitTopicIds))
+      .toList();
   final hits = {for (final card in eligible) card['id']! as String: _hits(card, query)};
   eligible.sort((a, b) {
     final byHits = hits[b['id']]!.compareTo(hits[a['id']]!);
@@ -688,7 +725,13 @@ const _followupDateWord = r'(?:\d{4}-\d{2}-\d{2}|今天|明天|后天|(?:本周|
 final _followupAsk = RegExp(
   '^(?:($_followupDateWord'
   r'(?:上午|下午|晚上)?)|(到时|到时候|过后|事后|结束后))?'
-  r'\s*(?:你(?:可以|来)?|可以|来)?(?:再)?问(?:问)?(?:我)?',
+  r'\s*(?:你(?:可以|来)?|可以|来)?(?:再)?问(?:问)?(我)?',
+);
+
+final _otherRecipient = RegExp(
+  r'^(?:我的)?(?:他|她|他们|她们|医生|大夫|护士|老师|教练|导师|我妈|我爸|妈妈|爸爸|老妈|老爸|爷爷|奶奶|外公|外婆|'
+  r'哥哥|姐姐|弟弟|妹妹|老板|领导|上司|经理|同事|同学|朋友|室友|房东|对象|老公|老婆|男朋友|女朋友|客服|物业|'
+  r'[一-龥]总)',
 );
 
 /// A small literal invitation grammar. Unsupported language remains waiting
@@ -724,6 +767,9 @@ MemoryRow? qualifyMemoryFollowup(MemoryRow card, MemoryRow source) {
   var afterDay = false;
   var reason = subject == null ? 'date_unresolved' : 'waiting_for_completion';
   if (ask != null) {
+    // 「问医生/问我妈/问老师……」是让本人去问别人，不是请她回头来问。
+    final recipient = '${ask.group(3) ?? ''}${asks.single.substring(ask.end)}';
+    if (_otherRecipient.hasMatch(recipient)) return null;
     date = _followupDay(ask.group(1) ?? '', source);
     if (date == null && event != null && ask.group(2) != null) {
       date = _followupDay(event['wording'] as String, source);

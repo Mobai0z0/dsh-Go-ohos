@@ -1929,6 +1929,25 @@ class L10nEn extends L10n {
       'The outcome could not be confirmed. Verify it first; never automatically retry a dispatched command.';
 
   @override
+  String get androidBackgroundProtectionTitle => 'Enhanced background protection';
+
+  @override
+  String get androidBackgroundProtectionAudioHint =>
+      'Plays silent audio while local tasks run in the background. May use more battery.';
+
+  @override
+  String get androidBackgroundProtectionLocationHint =>
+      'Uses approximate location and may use more battery. Coordinates are not saved or sent. Turning it off stops location updates without revoking system access.';
+
+  @override
+  String get androidBackgroundProtectionNeedsLocation =>
+      'Location access hasn’t been granted. Tap to open the app’s system settings and allow location under Permissions.';
+
+  @override
+  String get androidBackgroundProtectionNeedsAlways =>
+      'Background location is not active. Tap to open the app’s system settings and choose “Allow all the time” for Location under Permissions.';
+
+  @override
   String get backgroundProtectionDescription =>
       'Off by default. Protection is attempted only while local tasks are active and the app is in the background; the system may still pause them.';
 
@@ -5379,6 +5398,10 @@ class L10nEn extends L10n {
   String get companionSendFailed => 'That didn\'t get through. Say it again?';
 
   @override
+  String get companionAgentRetryClosed =>
+      'I may have already started on that, and I don\'t want to do it twice. Take a look in Tasks, then tell me whether to carry on?';
+
+  @override
   String get companionLogTitle => 'Log';
 
   @override
@@ -5596,6 +5619,40 @@ class L10nEn extends L10n {
   String get companionMemoryTitle => 'What she remembers';
 
   @override
+  String get companionMemoryCard => 'Card';
+
+  @override
+  String get companionMemoryPerson => 'Person';
+
+  @override
+  String get companionMemoryDiary => 'Diary';
+
+  @override
+  String get companionMemoryImpression => 'Her impression of you';
+
+  @override
+  String get companionMemorySearchTitle => 'Memory search';
+
+  @override
+  String get companionMemorySearchDescription =>
+      'Download an approximately 24 MB model to find related memories on this phone.';
+
+  @override
+  String get companionMemorySearchDownload => 'Download model';
+
+  @override
+  String get companionMemorySearchReady => 'Local model is ready';
+
+  @override
+  String get companionMemorySearchDownloading => 'Downloading…';
+
+  @override
+  String get companionMemorySearchFailed => 'Could not prepare the local model. Try downloading it again.';
+
+  @override
+  String get companionMemorySearchUnavailable => 'Local memory search is not available on this device.';
+
+  @override
   String companionMemoryScope(String host) {
     return 'Saved on $host, shared by both modes. You can edit or forget these anytime.';
   }
@@ -5794,13 +5851,19 @@ class L10nEn extends L10n {
   String get companionBond0 => 'Just met';
 
   @override
-  String get companionBond1 => 'Getting to know each other';
+  String get companionBond1 => 'Familiar';
 
   @override
-  String get companionBond2 => 'Close';
+  String get companionBond2 => 'Friends';
 
   @override
-  String get companionBond3 => 'Very close';
+  String get companionBond3 => 'Close';
+
+  @override
+  String get companionBond4 => 'Very close';
+
+  @override
+  String get companionBond5 => 'Inseparable';
 
   @override
   String get companionCloser1 => 'I think... I\'m not so nervous anymore.';
@@ -5810,6 +5873,12 @@ class L10nEn extends L10n {
 
   @override
   String get companionCloser3 => 'Keep coming back, okay? I\'ll miss you.';
+
+  @override
+  String get companionCloser4 => 'Even sitting quietly feels nice with you here.';
+
+  @override
+  String get companionCloser5 => 'Somewhere along the way, having you here became part of my day.';
 
   @override
   String get companionPatClose => 'I love it when you pat my head.';
@@ -7498,6 +7567,9 @@ class L10nEn extends L10n {
       'The workbook from the earlier agreement was found; the new agreement has not been completed.';
 
   @override
+  String get companionLegacyConversation => 'Earlier conversation (character not recorded)';
+
+  @override
   String get automaticDiagnosticsRecover => 'Recover local records';
 
   @override
@@ -8494,6 +8566,22 @@ class L10nEn extends L10n {
 
   @override
   String get engineProvidersOfficial => 'Official';
+
+  @override
+  String get engineProvidersChatGptOfficial => 'Official ChatGPT subscription';
+
+  @override
+  String get engineSubscriptionReconnectAccount => 'Sign in to previous account';
+
+  @override
+  String get engineSubscriptionUseAnotherAccount => 'Use another account';
+
+  @override
+  String get engineSubscriptionPlanNotEnabled => 'This grant does not allow ChatGPT subscription models.';
+
+  @override
+  String get engineSubscriptionRevocationUnconfirmed =>
+      'Signed out on this phone, but OpenAI revocation could not be confirmed.';
 
   @override
   String get engineProvidersSubscription => 'Subscriptions';
@@ -14442,6 +14530,12 @@ class L10nEn extends L10n {
   String get phoneAutoCollapseHint => 'Shrinks to a ball; tap to open';
 
   @override
+  String get phoneEdgeGlow => 'Screen edge glow';
+
+  @override
+  String get phoneEdgeGlowHint => 'Light round the screen while DSH works';
+
+  @override
   String get phoneDeveloperOptions => 'Developer options';
 
   @override
@@ -19628,6 +19722,9 @@ class L10nEn extends L10n {
 
   @override
   String get searchKwPhoneAutoCollapse => 'floating bar,collapse,bubble';
+
+  @override
+  String get searchKwPhoneEdgeGlow => 'edge glow,glow,light,effect,border';
 
   @override
   String get searchKwPhoneReturn => 'return,come back';
@@ -25035,6 +25132,13 @@ class L10nEn extends L10n {
   String get tavernIslandNoScripts => 'No card scripts in those pages';
 
   @override
+  String get tavernSPresetExternal => 'Presets load their own SPreset';
+
+  @override
+  String get tavernSPresetExternalSubtitle =>
+      'By default the built-in SPreset runs and nothing is loaded from the preset author’s site; turn on to let the preset load its own';
+
+  @override
   String get tavernIslandNoScriptsSubtitle =>
       'The card\'s own JavaScript doesn\'t run; status bars that need it stay still';
 
@@ -26617,6 +26721,14 @@ class L10nEn extends L10n {
   @override
   String tavernDeepSeekTaken(int count) {
     return '$count chats brought over; the rest are in the chat list';
+  }
+
+  @override
+  String get tavernIslandStoryWaiting => 'Loading this message’s data…';
+
+  @override
+  String tavernIslandStoryFailed(String reason) {
+    return 'Could not read this message’s data: $reason';
   }
 
   @override

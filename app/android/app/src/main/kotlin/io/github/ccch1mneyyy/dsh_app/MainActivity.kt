@@ -24,6 +24,7 @@ import io.github.ccch1mneyyy.dsh_app.launch.LaunchThemeSync
 import io.github.ccch1mneyyy.dsh_app.links.LinksPlugin
 import io.github.ccch1mneyyy.dsh_app.notify.NotifyPlugin
 import io.github.ccch1mneyyy.dsh_app.phone.PhonePlugin
+import io.github.ccch1mneyyy.dsh_app.runtime.AndroidBackgroundProtection
 import io.github.ccch1mneyyy.dsh_app.runtime.LaunchStart
 import io.github.ccch1mneyyy.dsh_app.runtime.RuntimePlugin
 import io.github.ccch1mneyyy.dsh_app.share.SharePlugin
@@ -78,6 +79,7 @@ class MainActivity : FlutterActivity() {
             engine.plugins.add(io.github.ccch1mneyyy.dsh_app.companion.CompanionWidgetPlugin())
             engine.plugins.add(io.github.ccch1mneyyy.dsh_app.companion.CompanionReminderPlugin())
             engine.plugins.add(io.github.ccch1mneyyy.dsh_app.companion.CompanionMapPlugin())
+            engine.plugins.add(io.github.ccch1mneyyy.dsh_app.companion.CompanionEmbeddingPlugin())
             engine.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
             cache.put(ENGINE_ID, engine)
         }
@@ -127,6 +129,16 @@ class MainActivity : FlutterActivity() {
         textActions?.forget()
     }
 
+    override fun onStart() {
+        super.onStart()
+        AndroidBackgroundProtection.get(this).setAppVisible(true)
+    }
+
+    override fun onStop() {
+        AndroidBackgroundProtection.get(this).setAppVisible(false)
+        super.onStop()
+    }
+
     override fun onResume() {
         super.onResume()
         io.github.ccch1mneyyy.dsh_app.phone.background.BackgroundControl.get(applicationContext).restoreKeptChannel()
@@ -150,17 +162,14 @@ class MainActivity : FlutterActivity() {
      * max: pinned. system: never declared.
      */
     private fun applyRefreshRate() {
-        @Suppress("DEPRECATION")
-        val display = windowManager.defaultDisplay
-        val now = display.mode
-        val fastest = display.supportedModes
-            .filter { it.physicalWidth == now.physicalWidth && it.physicalHeight == now.physicalHeight }
-            .maxByOrNull { it.refreshRate }
-        val want = when (refreshMode) {
-            "max" -> fastest
-            "system" -> null
-            else -> if (framesActive) fastest else null
-        }
+        val want = if (refreshMode == "max" || (refreshMode != "system" && framesActive)) {
+            @Suppress("DEPRECATION")
+            val display = windowManager.defaultDisplay
+            val now = display.mode
+            display.supportedModes
+                .filter { it.physicalWidth == now.physicalWidth && it.physicalHeight == now.physicalHeight }
+                .maxByOrNull { it.refreshRate }
+        } else null
         val target = want?.modeId ?: 0
         if (window.attributes.preferredDisplayModeId != target) {
             window.attributes = window.attributes.apply { preferredDisplayModeId = target }

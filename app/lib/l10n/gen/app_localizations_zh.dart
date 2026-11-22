@@ -1831,6 +1831,21 @@ class L10nZh extends L10n {
   String get androidShellErrorUnknown => '未能确认操作结果。先核实结果；已派发的命令不要自动重试。';
 
   @override
+  String get androidBackgroundProtectionTitle => '增强保活';
+
+  @override
+  String get androidBackgroundProtectionAudioHint => '有本机任务时在后台播放静音音频，可能增加耗电。';
+
+  @override
+  String get androidBackgroundProtectionLocationHint => '使用粗略位置，可能增加耗电；不保存或发送坐标。关闭后停止定位，但不撤回系统权限。';
+
+  @override
+  String get androidBackgroundProtectionNeedsLocation => '尚未授予位置权限。点此打开 App 的系统设置，在「权限」中允许访问位置。';
+
+  @override
+  String get androidBackgroundProtectionNeedsAlways => '后台定位尚未生效。点此打开 App 的系统设置，在「权限」中将位置设为“始终允许”。';
+
+  @override
   String get backgroundProtectionDescription => '默认关闭，仅在有本机任务且 App 退到后台时尝试保护；系统仍可能暂停任务。';
 
   @override
@@ -5051,6 +5066,9 @@ class L10nZh extends L10n {
   String get companionSendFailed => '这句话没送出去，要不要再说一次？';
 
   @override
+  String get companionAgentRetryClosed => '刚才那件事我可能已经动手了，怕做两遍。你先在「交代的事」里看一眼，再告诉我要不要接着来？';
+
+  @override
   String get companionLogTitle => '聊天记录';
 
   @override
@@ -5261,6 +5279,39 @@ class L10nZh extends L10n {
   String get companionMemoryTitle => '她记得的事';
 
   @override
+  String get companionMemoryCard => '卡片';
+
+  @override
+  String get companionMemoryPerson => '人物档案';
+
+  @override
+  String get companionMemoryDiary => '日记';
+
+  @override
+  String get companionMemoryImpression => '她对你的印象';
+
+  @override
+  String get companionMemorySearchTitle => '记忆检索';
+
+  @override
+  String get companionMemorySearchDescription => '下载约24 MB的模型，用手机本地查找意思相近的记忆。';
+
+  @override
+  String get companionMemorySearchDownload => '下载模型';
+
+  @override
+  String get companionMemorySearchReady => '本地模型已就绪';
+
+  @override
+  String get companionMemorySearchDownloading => '正在下载…';
+
+  @override
+  String get companionMemorySearchFailed => '暂时无法准备本地模型。可以重试下载。';
+
+  @override
+  String get companionMemorySearchUnavailable => '此设备暂不支持本地记忆检索。';
+
+  @override
   String companionMemoryScope(String host) {
     return '保存在$host，两种模式共用。你可以随时改或忘。';
   }
@@ -5449,16 +5500,22 @@ class L10nZh extends L10n {
   String get companionBondTitle => '你们的关系';
 
   @override
-  String get companionBond0 => '刚认识';
+  String get companionBond0 => '初识';
 
   @override
-  String get companionBond1 => '渐渐熟悉';
+  String get companionBond1 => '熟悉';
 
   @override
-  String get companionBond2 => '熟起来了';
+  String get companionBond2 => '朋友';
 
   @override
-  String get companionBond3 => '很亲近';
+  String get companionBond3 => '亲近';
+
+  @override
+  String get companionBond4 => '很亲';
+
+  @override
+  String get companionBond5 => '离不开';
 
   @override
   String get companionCloser1 => '好像……没那么紧张了。';
@@ -5468,6 +5525,12 @@ class L10nZh extends L10n {
 
   @override
   String get companionCloser3 => '以后也要常来哦，我会想你的。';
+
+  @override
+  String get companionCloser4 => '你在的时候，连安静待着都很开心。';
+
+  @override
+  String get companionCloser5 => '不知不觉，已经很习惯有你在了。';
 
   @override
   String get companionPatClose => '最喜欢被你摸头了。';
@@ -7063,6 +7126,9 @@ class L10nZh extends L10n {
   String get companionReceiptPriorResult => '此前约定写出的表已找到；新的约定尚未完成。';
 
   @override
+  String get companionLegacyConversation => '旧对话（角色未记录）';
+
+  @override
   String get automaticDiagnosticsRecover => '恢复本地记录';
 
   @override
@@ -8037,6 +8103,21 @@ class L10nZh extends L10n {
 
   @override
   String get engineProvidersOfficial => '官方';
+
+  @override
+  String get engineProvidersChatGptOfficial => 'ChatGPT 官方订阅';
+
+  @override
+  String get engineSubscriptionReconnectAccount => '登录原账号';
+
+  @override
+  String get engineSubscriptionUseAnotherAccount => '使用其他账号';
+
+  @override
+  String get engineSubscriptionPlanNotEnabled => '此授权无法使用 ChatGPT 订阅模型。';
+
+  @override
+  String get engineSubscriptionRevocationUnconfirmed => '已在本机退出，但没能确认 OpenAI 已撤销授权。';
 
   @override
   String get engineProvidersSubscription => '订阅';
@@ -13696,6 +13777,12 @@ class L10nZh extends L10n {
   String get phoneAutoCollapseHint => '收成小球，点按展开';
 
   @override
+  String get phoneEdgeGlow => '屏幕边缘光效';
+
+  @override
+  String get phoneEdgeGlowHint => '操控时屏幕四周的流光';
+
+  @override
   String get phoneDeveloperOptions => '开发者选项';
 
   @override
@@ -18623,6 +18710,9 @@ class L10nZh extends L10n {
 
   @override
   String get searchKwPhoneAutoCollapse => '悬浮条,收起,悬浮球';
+
+  @override
+  String get searchKwPhoneEdgeGlow => '边缘光,光效,流光,特效,边框';
 
   @override
   String get searchKwPhoneReturn => '返回,完成后返回';
@@ -23700,6 +23790,12 @@ class L10nZh extends L10n {
   String get tavernIslandNoScripts => '网页里不运行卡的脚本';
 
   @override
+  String get tavernSPresetExternal => '让预设自己加载 SPreset';
+
+  @override
+  String get tavernSPresetExternalSubtitle => '默认用内置的 SPreset，不从预设作者的网站加载脚本；打开后改用预设自己加载的';
+
+  @override
   String get tavernIslandNoScriptsSubtitle => '卡自带的 JavaScript 不运行；要靠脚本动起来的状态栏会停住';
 
   @override
@@ -25240,6 +25336,14 @@ class L10nZh extends L10n {
   @override
   String tavernDeepSeekTaken(int count) {
     return '接回了 $count 段，其余的在对话列表里';
+  }
+
+  @override
+  String get tavernIslandStoryWaiting => '正在读取本条消息的数据…';
+
+  @override
+  String tavernIslandStoryFailed(String reason) {
+    return '本条消息的数据读取失败：$reason';
   }
 
   @override
