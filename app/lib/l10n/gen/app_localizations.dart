@@ -10304,6 +10304,36 @@ abstract class L10n {
   /// **'她会提起什么'**
   String get companionMenuSignals;
 
+  /// No description provided for @companionAlwaysOn.
+  ///
+  /// In zh, this message translates to:
+  /// **'她一直在'**
+  String get companionAlwaysOn;
+
+  /// No description provided for @companionAlwaysOnHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'离开小屋她也在。通知栏里留着她，可以直接回她一句'**
+  String get companionAlwaysOnHint;
+
+  /// No description provided for @companionAlwaysOnRunning.
+  ///
+  /// In zh, this message translates to:
+  /// **'她在通知栏里陪着你'**
+  String get companionAlwaysOnRunning;
+
+  /// No description provided for @companionAlwaysOnNoNotify.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知被关了，打开后才能在通知栏里回她'**
+  String get companionAlwaysOnNoNotify;
+
+  /// No description provided for @companionAlwaysOnFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'这次没能留下来，再开一次试试'**
+  String get companionAlwaysOnFailed;
+
   /// No description provided for @companionSignalsHint.
   ///
   /// In zh, this message translates to:
@@ -13235,6 +13265,84 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'旧对话（角色未记录）'**
   String get companionLegacyConversation;
+
+  /// No description provided for @companionScreen.
+  ///
+  /// In zh, this message translates to:
+  /// **'陪你看屏幕'**
+  String get companionScreen;
+
+  /// No description provided for @companionScreenHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'隔一会儿看一眼屏幕，有值得说的才开口；看到的不会记下来'**
+  String get companionScreenHint;
+
+  /// No description provided for @companionScreenNeedsAccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'要先打开手机操控的无障碍，或者允许她录屏'**
+  String get companionScreenNeedsAccess;
+
+  /// No description provided for @companionScreenAllowProjection.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许录屏'**
+  String get companionScreenAllowProjection;
+
+  /// No description provided for @companionScreenFrequency.
+  ///
+  /// In zh, this message translates to:
+  /// **'多久开口'**
+  String get companionScreenFrequency;
+
+  /// No description provided for @companionScreenQuiet.
+  ///
+  /// In zh, this message translates to:
+  /// **'安静'**
+  String get companionScreenQuiet;
+
+  /// No description provided for @companionScreenQuietHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'很少开口，只说要紧的'**
+  String get companionScreenQuietHint;
+
+  /// No description provided for @companionScreenNormal.
+  ///
+  /// In zh, this message translates to:
+  /// **'正常'**
+  String get companionScreenNormal;
+
+  /// No description provided for @companionScreenNormalHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'看到有意思的会说一句'**
+  String get companionScreenNormalHint;
+
+  /// No description provided for @companionScreenChatty.
+  ///
+  /// In zh, this message translates to:
+  /// **'话多'**
+  String get companionScreenChatty;
+
+  /// No description provided for @companionScreenChattyHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'多陪你聊几句'**
+  String get companionScreenChattyHint;
+
+  /// No description provided for @companionScreenUsageAccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'让她知道你在用哪个 App'**
+  String get companionScreenUsageAccess;
+
+  /// No description provided for @companionScreenCost.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天大概花了 ¥{amount}'**
+  String companionScreenCost(String amount);
 
   /// No description provided for @automaticDiagnosticsRecover.
   ///
@@ -25641,7 +25749,7 @@ abstract class L10n {
   /// No description provided for @phoneAutoCollapseHint.
   ///
   /// In zh, this message translates to:
-  /// **'收成小球，点按展开'**
+  /// **'一会儿不碰就收起卡片、收成小球；关着时只在你点按时收起'**
   String get phoneAutoCollapseHint;
 
   /// No description provided for @phoneEdgeGlow.
@@ -25655,6 +25763,30 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'操控时屏幕四周的流光'**
   String get phoneEdgeGlowHint;
+
+  /// No description provided for @phoneSystemIsland.
+  ///
+  /// In zh, this message translates to:
+  /// **'用系统灵动岛显示'**
+  String get phoneSystemIsland;
+
+  /// No description provided for @phoneSystemIslandHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'小米超级岛、ColorOS 流体云、荣耀 MagicOS 上，操作进度放进系统的灵动岛，不再出悬浮条'**
+  String get phoneSystemIslandHint;
+
+  /// No description provided for @phoneSystemIslandOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'要先在通知设置里打开「实时活动」，没打开时仍用悬浮条'**
+  String get phoneSystemIslandOff;
+
+  /// No description provided for @phoneSystemIslandUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'这台手机没有可用的系统灵动岛，用悬浮条'**
+  String get phoneSystemIslandUnsupported;
 
   /// No description provided for @phoneDeveloperOptions.
   ///
@@ -34427,6 +34559,12 @@ abstract class L10n {
   /// In zh, this message translates to:
   /// **'边缘光,光效,流光,特效,边框'**
   String get searchKwPhoneEdgeGlow;
+
+  /// No description provided for @searchKwPhoneSystemIsland.
+  ///
+  /// In zh, this message translates to:
+  /// **'灵动岛,超级岛,流体云,胶囊,实时活动,悬浮条'**
+  String get searchKwPhoneSystemIsland;
 
   /// No description provided for @searchKwPhoneReturn.
   ///
@@ -50706,6 +50844,36 @@ abstract class L10n {
   /// **'压暗'**
   String get wallpaperDim;
 
+  /// No description provided for @wallpaperGuard.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动保证文字清晰'**
+  String get wallpaperGuard;
+
+  /// No description provided for @wallpaperGuardHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭后完全按上面的滑块，调到 0 就是原图'**
+  String get wallpaperGuardHint;
+
+  /// No description provided for @wallpaperGuardMotionHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'播放动图时只调文字颜色，画面不加遮罩'**
+  String get wallpaperGuardMotionHint;
+
+  /// No description provided for @wallpaperPlay.
+  ///
+  /// In zh, this message translates to:
+  /// **'播放动图'**
+  String get wallpaperPlay;
+
+  /// No description provided for @wallpaperPlayHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'减少动效时只显示第一帧'**
+  String get wallpaperPlayHint;
+
   /// No description provided for @wallpaperReplace.
   ///
   /// In zh, this message translates to:
@@ -50721,7 +50889,7 @@ abstract class L10n {
   /// No description provided for @wallpaperFooter.
   ///
   /// In zh, this message translates to:
-  /// **'用于首页、对话和抽屉。提亮在浅色模式、压暗在深色模式下各自生效，文字始终清晰。PNG、JPEG、WebP，15 MB 以内'**
+  /// **'用于首页、对话和抽屉。提亮在浅色模式、压暗在深色模式下各自生效。PNG、JPEG、WebP、GIF，15 MB 以内'**
   String get wallpaperFooter;
 
   /// No description provided for @wallpaperChanged.
@@ -50811,7 +50979,7 @@ abstract class L10n {
   /// No description provided for @searchKwWallpaper.
   ///
   /// In zh, this message translates to:
-  /// **'背景,背景图,聊天背景,自定义背景,换背景,模糊,壁纸图片'**
+  /// **'背景,背景图,聊天背景,自定义背景,换背景,模糊,壁纸图片,动图,动态壁纸,GIF'**
   String get searchKwWallpaper;
 
   /// No description provided for @webTitle.
@@ -52857,13 +53025,19 @@ abstract class L10n {
   /// No description provided for @workshopPublishCoverHelper.
   ///
   /// In zh, this message translates to:
-  /// **'PNG，每边不超过 512 像素，不超过 2 MB。不选就显示名字的第一个字。'**
+  /// **'支持 JPEG、PNG、WebP 等，上传前自动缩小。不选就显示名字的第一个字。'**
   String get workshopPublishCoverHelper;
+
+  /// No description provided for @workshopPublishCoverGenerating.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在生成封面，也可以自己选。'**
+  String get workshopPublishCoverGenerating;
 
   /// No description provided for @workshopPublishCoverChosen.
   ///
   /// In zh, this message translates to:
-  /// **'自选封面'**
+  /// **'投稿封面'**
   String get workshopPublishCoverChosen;
 
   /// No description provided for @workshopPublishCoverReplace.
@@ -52881,19 +53055,19 @@ abstract class L10n {
   /// No description provided for @workshopPublishCoverBadSize.
   ///
   /// In zh, this message translates to:
-  /// **'这张图是空的或超过 2 MB，换一张试试。'**
+  /// **'图片为空或超过 32 MB，换一张试试。'**
   String get workshopPublishCoverBadSize;
 
   /// No description provided for @workshopPublishCoverBadPng.
   ///
   /// In zh, this message translates to:
-  /// **'这不是一张完整的 PNG 图片，换一张试试。'**
+  /// **'图片损坏或格式不支持，换一张试试。'**
   String get workshopPublishCoverBadPng;
 
   /// No description provided for @workshopPublishCoverBadDimensions.
   ///
   /// In zh, this message translates to:
-  /// **'这张图太大了，每边最多 512 像素。缩小后再选。'**
+  /// **'图片分辨率过高，缩小后再选。'**
   String get workshopPublishCoverBadDimensions;
 
   /// No description provided for @workshopPublishCoverUnreadable.

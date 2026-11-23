@@ -5899,6 +5899,21 @@ class L10nEn extends L10n {
   String get companionMenuSignals => 'What she brings up';
 
   @override
+  String get companionAlwaysOn => 'Stay with me';
+
+  @override
+  String get companionAlwaysOnHint => 'She stays when you leave the room, in a notification you can reply to';
+
+  @override
+  String get companionAlwaysOnRunning => 'She\'s with you in the notifications';
+
+  @override
+  String get companionAlwaysOnNoNotify => 'Notifications are off; turn them on to reply to her there';
+
+  @override
+  String get companionAlwaysOnFailed => 'She couldn\'t stay this time; try turning it on again';
+
+  @override
   String get companionSignalsHint =>
       'These are said only to you, here in her room; nothing goes to the model. How often follows How often she speaks up, shared with invitations, and never late at night. On Quiet she says nothing.';
 
@@ -7568,6 +7583,49 @@ class L10nEn extends L10n {
 
   @override
   String get companionLegacyConversation => 'Earlier conversation (character not recorded)';
+
+  @override
+  String get companionScreen => 'Watch the screen with me';
+
+  @override
+  String get companionScreenHint =>
+      'She glances at the screen now and then and only speaks up when something is worth saying; nothing she sees is kept';
+
+  @override
+  String get companionScreenNeedsAccess =>
+      'Turn on phone control\'s accessibility service first, or let her record the screen';
+
+  @override
+  String get companionScreenAllowProjection => 'Allow screen recording';
+
+  @override
+  String get companionScreenFrequency => 'How often she speaks';
+
+  @override
+  String get companionScreenQuiet => 'Quiet';
+
+  @override
+  String get companionScreenQuietHint => 'Rarely, only when it matters';
+
+  @override
+  String get companionScreenNormal => 'Normal';
+
+  @override
+  String get companionScreenNormalHint => 'A word when something catches her eye';
+
+  @override
+  String get companionScreenChatty => 'Chatty';
+
+  @override
+  String get companionScreenChattyHint => 'Talks with you more often';
+
+  @override
+  String get companionScreenUsageAccess => 'Let her know which app you\'re using';
+
+  @override
+  String companionScreenCost(String amount) {
+    return 'About ¥$amount today';
+  }
 
   @override
   String get automaticDiagnosticsRecover => 'Recover local records';
@@ -14527,13 +14585,28 @@ class L10nEn extends L10n {
   String get phoneAutoCollapse => 'Collapse when idle';
 
   @override
-  String get phoneAutoCollapseHint => 'Shrinks to a ball; tap to open';
+  String get phoneAutoCollapseHint =>
+      'Left alone, the card closes and the bar shrinks to a ball; off, only when you tap';
 
   @override
   String get phoneEdgeGlow => 'Screen edge glow';
 
   @override
   String get phoneEdgeGlowHint => 'Light round the screen while DSH works';
+
+  @override
+  String get phoneSystemIsland => 'Show in the system island';
+
+  @override
+  String get phoneSystemIslandHint =>
+      'On HyperOS, ColorOS and MagicOS, progress goes into the system\'s own island instead of the floating bar';
+
+  @override
+  String get phoneSystemIslandOff =>
+      'Turn on Live activity in the notification settings first; until then the floating bar shows';
+
+  @override
+  String get phoneSystemIslandUnsupported => 'This phone has no system island to use; the floating bar shows';
 
   @override
   String get phoneDeveloperOptions => 'Developer options';
@@ -19725,6 +19798,9 @@ class L10nEn extends L10n {
 
   @override
   String get searchKwPhoneEdgeGlow => 'edge glow,glow,light,effect,border';
+
+  @override
+  String get searchKwPhoneSystemIsland => 'island,dynamic island,live updates,floating bar,capsule';
 
   @override
   String get searchKwPhoneReturn => 'return,come back';
@@ -29309,6 +29385,23 @@ class L10nEn extends L10n {
   String get wallpaperDim => 'Dim';
 
   @override
+  String get wallpaperGuard => 'Keep text readable';
+
+  @override
+  String get wallpaperGuardHint =>
+      'Off: blur and brightness follow the sliders exactly, and at 0 you get the original picture';
+
+  @override
+  String get wallpaperGuardMotionHint =>
+      'While an animation plays, only text colours are adjusted; nothing is laid over the picture';
+
+  @override
+  String get wallpaperPlay => 'Play animation';
+
+  @override
+  String get wallpaperPlayHint => 'Shows the first frame when motion is reduced';
+
+  @override
   String get wallpaperReplace => 'Replace picture';
 
   @override
@@ -29316,7 +29409,7 @@ class L10nEn extends L10n {
 
   @override
   String get wallpaperFooter =>
-      'Shown on home, in chats and in the drawer. Lighten applies in light mode, Dim in dark mode; text always stays clear. PNG, JPEG or WebP, up to 15 MB.';
+      'Shown on home, in chats and in the drawer. Lighten applies in light mode, Dim in dark mode. PNG, JPEG, WebP or GIF, up to 15 MB.';
 
   @override
   String get wallpaperChanged => 'Wallpaper changed';
@@ -29362,7 +29455,8 @@ class L10nEn extends L10n {
   String get wallpaperSampleTool => 'Checked 3 weather sources';
 
   @override
-  String get searchKwWallpaper => 'background,background image,chat background,custom background,backdrop,blur,photo';
+  String get searchKwWallpaper =>
+      'background,background image,chat background,custom background,backdrop,blur,photo,animated,gif,live wallpaper';
 
   @override
   String get webTitle => 'DSH Web';
@@ -30459,10 +30553,13 @@ class L10nEn extends L10n {
 
   @override
   String get workshopPublishCoverHelper =>
-      'PNG, up to 512 px a side and 2 MB. Without one, the first letter of the name is shown.';
+      'Supports JPEG, PNG, WebP and more, resized before upload. Without one, the first letter of the name is shown.';
 
   @override
-  String get workshopPublishCoverChosen => 'Your cover';
+  String get workshopPublishCoverGenerating => 'Generating a cover. You can also choose your own.';
+
+  @override
+  String get workshopPublishCoverChosen => 'Submission cover';
 
   @override
   String get workshopPublishCoverReplace => 'Replace';
@@ -30471,14 +30568,13 @@ class L10nEn extends L10n {
   String get workshopPublishCoverRemove => 'Remove';
 
   @override
-  String get workshopPublishCoverBadSize => 'This image is empty or larger than 2 MB. Try another.';
+  String get workshopPublishCoverBadSize => 'This image is empty or larger than 32 MB. Try another.';
 
   @override
-  String get workshopPublishCoverBadPng => 'This isn\'t an intact PNG image. Try another.';
+  String get workshopPublishCoverBadPng => 'This image is damaged or in an unsupported format. Try another.';
 
   @override
-  String get workshopPublishCoverBadDimensions =>
-      'This image is too large: 512 px a side at most. Shrink it and choose again.';
+  String get workshopPublishCoverBadDimensions => 'This image has too many pixels. Shrink it and choose again.';
 
   @override
   String get workshopPublishCoverUnreadable => 'Couldn\'t read this image. Try another.';

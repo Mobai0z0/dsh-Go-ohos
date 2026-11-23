@@ -5551,6 +5551,21 @@ class L10nZh extends L10n {
   String get companionMenuSignals => '她会提起什么';
 
   @override
+  String get companionAlwaysOn => '她一直在';
+
+  @override
+  String get companionAlwaysOnHint => '离开小屋她也在。通知栏里留着她，可以直接回她一句';
+
+  @override
+  String get companionAlwaysOnRunning => '她在通知栏里陪着你';
+
+  @override
+  String get companionAlwaysOnNoNotify => '通知被关了，打开后才能在通知栏里回她';
+
+  @override
+  String get companionAlwaysOnFailed => '这次没能留下来，再开一次试试';
+
+  @override
   String get companionSignalsHint => '这些只在小屋里说给你听，不会发给模型。说多说少跟着「她多主动」，和邀请共用次数，深夜不说；选「安静」她也不说。';
 
   @override
@@ -7127,6 +7142,47 @@ class L10nZh extends L10n {
 
   @override
   String get companionLegacyConversation => '旧对话（角色未记录）';
+
+  @override
+  String get companionScreen => '陪你看屏幕';
+
+  @override
+  String get companionScreenHint => '隔一会儿看一眼屏幕，有值得说的才开口；看到的不会记下来';
+
+  @override
+  String get companionScreenNeedsAccess => '要先打开手机操控的无障碍，或者允许她录屏';
+
+  @override
+  String get companionScreenAllowProjection => '允许录屏';
+
+  @override
+  String get companionScreenFrequency => '多久开口';
+
+  @override
+  String get companionScreenQuiet => '安静';
+
+  @override
+  String get companionScreenQuietHint => '很少开口，只说要紧的';
+
+  @override
+  String get companionScreenNormal => '正常';
+
+  @override
+  String get companionScreenNormalHint => '看到有意思的会说一句';
+
+  @override
+  String get companionScreenChatty => '话多';
+
+  @override
+  String get companionScreenChattyHint => '多陪你聊几句';
+
+  @override
+  String get companionScreenUsageAccess => '让她知道你在用哪个 App';
+
+  @override
+  String companionScreenCost(String amount) {
+    return '今天大概花了 ¥$amount';
+  }
 
   @override
   String get automaticDiagnosticsRecover => '恢复本地记录';
@@ -13774,13 +13830,25 @@ class L10nZh extends L10n {
   String get phoneAutoCollapse => '闲置时自动收起';
 
   @override
-  String get phoneAutoCollapseHint => '收成小球，点按展开';
+  String get phoneAutoCollapseHint => '一会儿不碰就收起卡片、收成小球；关着时只在你点按时收起';
 
   @override
   String get phoneEdgeGlow => '屏幕边缘光效';
 
   @override
   String get phoneEdgeGlowHint => '操控时屏幕四周的流光';
+
+  @override
+  String get phoneSystemIsland => '用系统灵动岛显示';
+
+  @override
+  String get phoneSystemIslandHint => '小米超级岛、ColorOS 流体云、荣耀 MagicOS 上，操作进度放进系统的灵动岛，不再出悬浮条';
+
+  @override
+  String get phoneSystemIslandOff => '要先在通知设置里打开「实时活动」，没打开时仍用悬浮条';
+
+  @override
+  String get phoneSystemIslandUnsupported => '这台手机没有可用的系统灵动岛，用悬浮条';
 
   @override
   String get phoneDeveloperOptions => '开发者选项';
@@ -18713,6 +18781,9 @@ class L10nZh extends L10n {
 
   @override
   String get searchKwPhoneEdgeGlow => '边缘光,光效,流光,特效,边框';
+
+  @override
+  String get searchKwPhoneSystemIsland => '灵动岛,超级岛,流体云,胶囊,实时活动,悬浮条';
 
   @override
   String get searchKwPhoneReturn => '返回,完成后返回';
@@ -27780,13 +27851,28 @@ class L10nZh extends L10n {
   String get wallpaperDim => '压暗';
 
   @override
+  String get wallpaperGuard => '自动保证文字清晰';
+
+  @override
+  String get wallpaperGuardHint => '关闭后完全按上面的滑块，调到 0 就是原图';
+
+  @override
+  String get wallpaperGuardMotionHint => '播放动图时只调文字颜色，画面不加遮罩';
+
+  @override
+  String get wallpaperPlay => '播放动图';
+
+  @override
+  String get wallpaperPlayHint => '减少动效时只显示第一帧';
+
+  @override
   String get wallpaperReplace => '更换图片';
 
   @override
   String get wallpaperPreview => '预览';
 
   @override
-  String get wallpaperFooter => '用于首页、对话和抽屉。提亮在浅色模式、压暗在深色模式下各自生效，文字始终清晰。PNG、JPEG、WebP，15 MB 以内';
+  String get wallpaperFooter => '用于首页、对话和抽屉。提亮在浅色模式、压暗在深色模式下各自生效。PNG、JPEG、WebP、GIF，15 MB 以内';
 
   @override
   String get wallpaperChanged => '壁纸已更换';
@@ -27831,7 +27917,7 @@ class L10nZh extends L10n {
   String get wallpaperSampleTool => '查了 3 个天气来源';
 
   @override
-  String get searchKwWallpaper => '背景,背景图,聊天背景,自定义背景,换背景,模糊,壁纸图片';
+  String get searchKwWallpaper => '背景,背景图,聊天背景,自定义背景,换背景,模糊,壁纸图片,动图,动态壁纸,GIF';
 
   @override
   String get webTitle => 'DSH 网页版';
@@ -28890,10 +28976,13 @@ class L10nZh extends L10n {
   String get workshopPublishCoverPick => '选一张封面';
 
   @override
-  String get workshopPublishCoverHelper => 'PNG，每边不超过 512 像素，不超过 2 MB。不选就显示名字的第一个字。';
+  String get workshopPublishCoverHelper => '支持 JPEG、PNG、WebP 等，上传前自动缩小。不选就显示名字的第一个字。';
 
   @override
-  String get workshopPublishCoverChosen => '自选封面';
+  String get workshopPublishCoverGenerating => '正在生成封面，也可以自己选。';
+
+  @override
+  String get workshopPublishCoverChosen => '投稿封面';
 
   @override
   String get workshopPublishCoverReplace => '换一张';
@@ -28902,13 +28991,13 @@ class L10nZh extends L10n {
   String get workshopPublishCoverRemove => '移除';
 
   @override
-  String get workshopPublishCoverBadSize => '这张图是空的或超过 2 MB，换一张试试。';
+  String get workshopPublishCoverBadSize => '图片为空或超过 32 MB，换一张试试。';
 
   @override
-  String get workshopPublishCoverBadPng => '这不是一张完整的 PNG 图片，换一张试试。';
+  String get workshopPublishCoverBadPng => '图片损坏或格式不支持，换一张试试。';
 
   @override
-  String get workshopPublishCoverBadDimensions => '这张图太大了，每边最多 512 像素。缩小后再选。';
+  String get workshopPublishCoverBadDimensions => '图片分辨率过高，缩小后再选。';
 
   @override
   String get workshopPublishCoverUnreadable => '没能读出这张图，换一张试试。';

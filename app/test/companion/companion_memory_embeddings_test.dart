@@ -125,6 +125,9 @@ void main() {
     final count = calls.where((call) => call.method == 'embed').length;
     await embeddings.rank(store: store, characterId: a, query: '第二次查询', isCurrent: () => true);
     expect(calls.where((call) => call.method == 'embed').length, count + 1);
+    // A tool round trip of the same turn ranks the same text again: no new encoding.
+    await embeddings.rank(store: store, characterId: a, query: '第二次查询', isCurrent: () => true);
+    expect(calls.where((call) => call.method == 'embed').length, count + 1);
     expect(
       store.saveMemoryEmbedding(
         characterId: a,
@@ -193,9 +196,11 @@ void main() {
   test('missing optional model is null without downloading and empty candidates need no native call', () async {
     expect(await embeddings.rank(store: store, characterId: null, query: '空', isCurrent: () => true), isEmpty);
     expect(calls, isEmpty);
+    expect(embeddings.knownUnavailable, isFalse, reason: 'not checked yet: the next request may load it');
     shared('还没有下载本地模型');
     expect(await embeddings.rank(store: store, characterId: null, query: '查询', isCurrent: () => true), isNull);
     expect(calls.map((call) => call.method), ['load']);
+    expect(embeddings.knownUnavailable, isTrue);
     expect(embeddings.status, CompanionMemoryModelStatus.notDownloaded);
     expect(database.select('SELECT * FROM memory_embeddings'), isEmpty);
   });

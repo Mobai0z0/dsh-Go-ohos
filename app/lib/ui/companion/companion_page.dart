@@ -10,14 +10,17 @@ import 'dart:math';
 import 'package:dsh_client/dsh_client.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../companion/companion_residency.dart';
 import '../../companion/companion_adapt.dart';
 import '../../companion/companion_agent.dart';
 import '../../companion/companion_agent_task_ui.dart';
+import '../../companion/companion_always_on.dart' show companionAlwaysOnOwnerProvider;
 import '../../state/companion_agent_state.dart';
 import '../../companion/companion_initiative.dart';
 import '../../companion/companion_initiative_owner.dart';
@@ -167,6 +170,9 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
   int _wordsSpoken = 0;
   String _replyWords = '';
 
+  /// The reply [_onReply] last read, for the frames that show it.
+  ({String text, bool streaming, CompanionReply reply})? _lastReply;
+
   // The log can still display the phone's pre-Agent history. New messages in
   // both modes use the original SQLite phone conversation.
   CompanionLightHistory? _lightHistory;
@@ -175,6 +181,8 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
 
   // What's on screen.
   String? _bubble;
+  String? _bubbleReplyId;
+  var _bubbleTextKey = GlobalKey();
   List<({String taskId, String placeName})> _lookupResults = const [];
   List<String> _notesResults = const [];
   List<String> _mapResults = const [];
@@ -287,6 +295,10 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
         if (state != AppLifecycleState.resumed) {
           _notesForegroundEpoch++;
           _mapHandoff.close();
+        } else if (mounted) {
+          // A reply can finish while this window is paused. Its next actual
+          // frame, even without another Agent notification, may present it.
+          setState(() {});
         }
         _observeInitiative();
         _observeLateUse();
@@ -601,7 +613,11 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
     _affinityCharacter = role;
     _bondTier = tier;
     _affinitySettledDay = settledDay;
-    if (role != null && role == previousRole && tier > previousTier && settledDay != null && settledDay != previousDay) {
+    if (role != null &&
+        role == previousRole &&
+        tier > previousTier &&
+        settledDay != null &&
+        settledDay != previousDay) {
       _closer(tier);
     }
     if (_vitals case final snapshot?) {
@@ -1383,12 +1399,16 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
     }
   }
 
-  void _showBubble(String text, {Duration? hold, bool error = false, bool clearTasks = true}) {
+  void _showBubble(String text, {Duration? hold, bool error = false, bool clearTasks = true, String? replyId}) {
     _retireGreeting();
     _bubbleTimer?.cancel();
     _memoryFollowupTicket = null;
     setState(() {
+      // AnimatedSwitcher can still retain the outgoing words while a new
+      // bubble arrives. Never give those two Text elements the same GlobalKey.
+      if (_bubble == null) _bubbleTextKey = GlobalKey();
       _bubble = text;
+      _bubbleReplyId = replyId;
       _bubbleIsError = error;
       if (clearTasks) {
         _lookupResults = const [];
@@ -1616,7 +1636,7 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
       _bubbleIsError = false;
     } else {
       _myLine = null;
-      _showBubble(words, clearTasks: false);
+      _showBubble(words, clearTasks: false, replyId: _baselineUser);
     }
   }
 
@@ -1661,6 +1681,7 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
       emotions: _moves.emotionLabels,
       actions: _moves.actionLabels,
     );
+    _lastReply = (text: text, streaming: running, reply: reply);
     for (final mark in reply.marks.skip(_marksHandled)) {
       _retireGreeting();
       switch (mark.kind) {
@@ -1716,21 +1737,104 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
       _running = running;
       _needsAttention = attention;
     });
-    if (user != null && reply.words.isNotEmpty && error == null) {
-      final attachment = _attachment;
-      final current = attachment.captureCurrent();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted &&
-            current() &&
-            identical(_attachment, attachment) &&
-            _notesForegroundHere &&
-            _baselineUser == user &&
-            !_bubbleIsError &&
-            _bubble == reply.words) {
-          attachment.presentedReply(user, text);
-        }
+  }
+
+  /// Capture the reply rendered by this frame. Returning to this room can
+  /// show words whose Agent notifications all finished while it was hidden.
+  void _queueReplyPresentation() {
+    final attachment = _attachment;
+    final user = attachment.replyId;
+    final text = attachment.text;
+    if (!attachment.isAttached || user == null || _baselineUser != user || attachment.error != null) return;
+    final running = attachment.running;
+    final last = _lastReply;
+    // Every build and every frame of the bubble's rise lands here; the words
+    // and their offsets do not depend on the mark labels.
+    final reply = last != null && last.streaming == running && last.text == text
+        ? last.reply
+        : parseCompanionReply(text, streaming: running);
+    if (reply.words.isEmpty || _bubbleReplyId != user || _bubbleIsError || _bubble != reply.words) return;
+    final current = attachment.captureCurrent();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted &&
+          current() &&
+          identical(_attachment, attachment) &&
+          _notesForegroundHere &&
+          _phase == _Phase.stage &&
+          _stageReady &&
+          _baselineUser == user &&
+          _bubbleReplyId == user &&
+          attachment.error == null &&
+          !_bubbleIsError &&
+          _bubble == reply.words) {
+        final sources = _visibleReplySources(attachment, reply);
+        if (sources.isNotEmpty) attachment.presentedReply(user, text, sourceIds: sources);
+      }
+    });
+    // Scroll metrics may arrive after a frame, without an Agent notification.
+    WidgetsBinding.instance.ensureVisualUpdate();
+  }
+
+  Set<String> _visibleReplySources(CompanionAgentAttachment attachment, CompanionReply reply) {
+    final pending = attachment.pendingReplyRanges;
+    if (pending.isEmpty) return const {};
+    final textObject = _bubbleTextKey.currentContext?.findRenderObject();
+    if (textObject == null || !textObject.attached) return const {};
+    RenderParagraph? findParagraph(RenderObject object) {
+      if (object is RenderParagraph) return object;
+      RenderParagraph? found;
+      object.visitChildren((child) {
+        found ??= findParagraph(child);
       });
+      return found;
     }
+
+    // Text may have a selection/semantics wrapper. Search only that Text's
+    // render subtree, never another bubble or another page's paragraph.
+    final paragraph = findParagraph(textObject);
+    if (paragraph == null ||
+        !paragraph.attached ||
+        !paragraph.hasSize ||
+        paragraph.size.isEmpty ||
+        paragraph.text.toPlainText() != reply.words) {
+      return const {};
+    }
+    final RenderBox viewport;
+    switch (RenderAbstractViewport.maybeOf(paragraph)) {
+      case final RenderBox box when box.attached && box.hasSize && !box.size.isEmpty:
+        viewport = box;
+      default:
+        return const {};
+    }
+    var visible = MatrixUtils.transformRect(
+      viewport.getTransformTo(null),
+      Offset.zero & viewport.size,
+    ).intersect(Offset.zero & MediaQuery.sizeOf(context));
+    RenderObject child = paragraph;
+    for (var parent = child.parent; parent != null; parent = child.parent) {
+      // A nonzero transform does not prove that an offstage/zero-opacity child
+      // was painted. Respect the actual render parents before reading boxes.
+      if (!parent.paintsChild(child)) return const {};
+      if (parent is RenderAnimatedOpacity && Color.getAlphaFromOpacity(parent.opacity.value) == 0) return const {};
+      final clip = parent.describeApproximatePaintClip(child);
+      if (clip != null) {
+        visible = visible.intersect(MatrixUtils.transformRect(parent.getTransformTo(null), clip));
+      }
+      child = parent;
+    }
+    if (!visible.isFinite || visible.isEmpty) return const {};
+    final transform = paragraph.getTransformTo(null);
+    final sources = <String>{};
+    for (final entry in pending.entries) {
+      for (final range in reply.wordRangesFrom(entry.value.start, entry.value.end)) {
+        final boxes = paragraph.getBoxesForSelection(TextSelection(baseOffset: range.start, extentOffset: range.end));
+        if (boxes.any((box) => !MatrixUtils.transformRect(transform, box.toRect()).intersect(visible).isEmpty)) {
+          sources.add(entry.key);
+          break;
+        }
+      }
+    }
+    return sources;
   }
 
   Future<void> _send() async {
@@ -2269,6 +2373,94 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
     );
   }
 
+  /// 陪你看屏幕: the resident observer's settings. Native state is the authority;
+  /// the sheet only mirrors it and sends changes back.
+  void _openScreen() {
+    final screen = ref.read(companionAlwaysOnOwnerProvider).screen;
+    unawaited(screen.refresh());
+    unawaited(
+      showAppSheet<void>(
+        context,
+        builder: (sheet) => ValueListenableBuilder<Map<String, Object?>>(
+          valueListenable: screen.state,
+          builder: (sheet, state, _) {
+            final l10n = sheet.l10n;
+            final enabled = state['enabled'] == true;
+            final canSee = state['accessibility'] == true || state['projection_active'] == true;
+            final frequency = state['frequency'] as String? ?? 'normal';
+            final cost = (state['today_estimated_cny'] as num?)?.toDouble() ?? 0;
+            final caption = Theme.of(sheet).textTheme.bodySmall;
+            // A channel failure leaves the mirrored state as it was.
+            void send(Future<void> change) => unawaited(change.catchError((Object _) {}));
+            return SafeArea(
+              top: false,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SheetTitleBar(l10n.companionScreen),
+                    SheetGroup(
+                      margin: const EdgeInsets.fromLTRB(SheetTitleBar.inset, 0, SheetTitleBar.inset, 12),
+                      children: [
+                        SettingsSwitchTile(
+                          tinted: false,
+                          title: l10n.companionScreen,
+                          subtitle: enabled && !canSee ? l10n.companionScreenNeedsAccess : l10n.companionScreenHint,
+                          value: enabled,
+                          onChanged: (on) => send(screen.configure(enabled: on)),
+                        ),
+                        if (enabled && !canSee)
+                          SettingsTile(
+                            tinted: false,
+                            title: l10n.companionScreenAllowProjection,
+                            onTap: () => send(screen.requestProjection()),
+                          ),
+                        if (state['usage_access'] == false)
+                          SettingsTile(
+                            tinted: false,
+                            title: l10n.companionScreenUsageAccess,
+                            onTap: () => send(screen.requestUsageAccess()),
+                          ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(SheetTitleBar.inset + 8, 0, SheetTitleBar.inset + 8, 8),
+                      child: Text(l10n.companionScreenFrequency, style: caption),
+                    ),
+                    SheetGroup(
+                      margin: const EdgeInsets.fromLTRB(SheetTitleBar.inset, 0, SheetTitleBar.inset, 12),
+                      children: [
+                        for (final (value, title, hint) in [
+                          ('quiet', l10n.companionScreenQuiet, l10n.companionScreenQuietHint),
+                          ('normal', l10n.companionScreenNormal, l10n.companionScreenNormalHint),
+                          ('chatty', l10n.companionScreenChatty, l10n.companionScreenChattyHint),
+                        ])
+                          SettingsTile(
+                            tinted: false,
+                            title: title,
+                            subtitle: hint,
+                            chevron: false,
+                            trailing: value == frequency ? const Icon(AppIcons.selected, size: 20) : null,
+                            onTap: value == frequency ? null : () => send(screen.configure(frequency: value)),
+                          ),
+                      ],
+                    ),
+                    if (cost > 0)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(SheetTitleBar.inset + 8, 0, SheetTitleBar.inset + 8, 16),
+                        child: Text(l10n.companionScreenCost(cost.toStringAsFixed(2)), style: caption),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   void _openMenu() {
     _acted();
     final l10n = context.l10n;
@@ -2423,6 +2615,41 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
                           _choosePace();
                         },
                       ),
+                    ),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final status = ref.watch(companionResidencyProvider);
+                        if (!status.available) return const SizedBox.shrink();
+                        return SettingsSwitchTile(
+                          icon: AppIcons.pet,
+                          tinted: false,
+                          title: l10n.companionAlwaysOn,
+                          subtitle: switch (status) {
+                            CompanionAlwaysOnStatus(failure: _?) => l10n.companionAlwaysOnFailed,
+                            CompanionAlwaysOnStatus(enabled: true, notificationAvailable: false) =>
+                              l10n.companionAlwaysOnNoNotify,
+                            CompanionAlwaysOnStatus(enabled: true, running: true) => l10n.companionAlwaysOnRunning,
+                            _ => l10n.companionAlwaysOnHint,
+                          },
+                          value: status.enabled,
+                          onChanged: (on) => unawaited(ref.read(companionResidencyProvider.notifier).setEnabled(on)),
+                        );
+                      },
+                    ),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final status = ref.watch(companionResidencyProvider);
+                        if (!status.available || !status.enabled || !status.running) return const SizedBox.shrink();
+                        return SettingsTile(
+                          icon: AppIcons.preview,
+                          tinted: false,
+                          title: l10n.companionScreen,
+                          onTap: () {
+                            Navigator.of(sheet).pop();
+                            _openScreen();
+                          },
+                        );
+                      },
                     ),
                     SettingsTile(
                       icon: AppIcons.notifications,
@@ -2633,6 +2860,7 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
     final padding = MediaQuery.paddingOf(context);
     final store = _store;
     final showStage = _phase == _Phase.stage && store != null;
+    if (showStage && _stageReady) _queueReplyPresentation();
     final name = _name(l10n);
     // Shown only while it still belongs here and nothing else has the floor,
     // in this very frame (the owner hears about it right after).
@@ -2771,6 +2999,8 @@ class _CompanionPageState extends ConsumerState<CompanionPage>
                   CompanionMyLine(text: _myLine),
                   CompanionSpeech(
                     text: _bubble,
+                    textKey: _bubbleTextKey,
+                    onFrame: _queueReplyPresentation,
                     error: _bubbleIsError,
                     thinking: _sending || (_running && _bubble == null),
                     onPullBack: _openLog,

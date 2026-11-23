@@ -47,7 +47,8 @@ extension CompanionMemoryScopeStore on CompanionMemoryStore {
   }) {
     _checkMemoryCharacter(characterId);
     final at = _checkedNow();
-    final domain = _memoryDomainCards(characterId);
+    final domain = _memoryDomainCards(characterId, includeEvidence: false);
+    _loadRetrievalEvidence(domain);
     final explicit = {...explicitTopicIds, if (input != null) ...explicitMemoryTopics(input, domain)};
     return [
       for (final card in domain)
@@ -56,6 +57,25 @@ extension CompanionMemoryScopeStore on CompanionMemoryStore {
             _memoryReferencesCurrent(card['id'] as String))
           card,
     ];
+  }
+
+  void _loadRetrievalEvidence(Iterable<MemoryRow> cards) {
+    final evidence = {for (final card in cards) card['id']: card['evidence'] as List<MemoryRow>};
+    if (evidence.isEmpty) return;
+    final statement = _db.prepare('''
+      $_memoryEvidenceSelect
+      WHERE s.card_id IN (SELECT value FROM json_each(?))
+      ORDER BY s.card_id, s.support_group, m.first_seq
+    ''');
+    try {
+      final rows = statement.selectCursor([jsonEncode(evidence.keys.toList())]);
+      while (rows.moveNext()) {
+        final source = rows.current;
+        evidence[source['card_id']]!.add(Map<String, Object?>.from(source));
+      }
+    } finally {
+      statement.close();
+    }
   }
 
   /// A presentation query is deliberately separate from the model's grant
@@ -68,6 +88,28 @@ extension CompanionMemoryScopeStore on CompanionMemoryStore {
             card['status'] != 'withdrawn' &&
             _memoryReferencesCurrent(card['id'] as String))
           card,
+    ];
+  }
+
+  /// The rows of [memoryPageCards] the agent always carries: [characterId]'s
+  /// impression and the diaries of local days from [fromDay] up to
+  /// [beforeDay]. Narrowed in SQL, since reading and checking a card takes
+  /// several queries of its own and the domain holds every card.
+  List<MemoryRow> memoryFixedLayerCards({
+    required String? characterId,
+    required String fromDay,
+    required String beforeDay,
+  }) {
+    _checkMemoryCharacter(characterId);
+    return [
+      for (final card in _memoryDomainCards(
+        characterId,
+        where:
+            "AND c.status!='withdrawn' AND ((c.collection='impression' AND c.character_id=?) "
+            "OR (c.collection='diary' AND c.local_day>=? AND c.local_day<?))",
+        args: [characterId, fromDay, beforeDay],
+      ))
+        if (_memoryReferencesCurrent(card['id'] as String)) card,
     ];
   }
 
@@ -135,19 +177,24 @@ extension CompanionMemoryScopeStore on CompanionMemoryStore {
     }
   }
 
-  List<MemoryRow> _memoryDomainCards(String? characterId) => [
+  List<MemoryRow> _memoryDomainCards(
+    String? characterId, {
+    String where = '',
+    List<Object?> args = const [],
+    bool includeEvidence = true,
+  }) => [
     for (final row in _db.select(
       '''
       SELECT c.*,t.mode AS topic_mode FROM memory_cards c JOIN memory_topics t ON t.id=c.topic_id
-      WHERE c.character_id IS NULL OR c.character_id=? ORDER BY c.id
+      WHERE (c.character_id IS NULL OR c.character_id=?) $where ORDER BY c.id
     ''',
-      [characterId],
+      [characterId, ...args],
     ))
-      _memoryDomainCard(row),
+      _memoryDomainCard(row, includeEvidence: includeEvidence),
   ];
 
-  MemoryRow _memoryDomainCard(Row row) {
-    final card = _card(row);
+  MemoryRow _memoryDomainCard(Row row, {required bool includeEvidence}) {
+    final card = _card(row, includeEvidence: includeEvidence);
     if (card['collection'] != 'person') return card;
     final aliases = [
       for (final alias in _db.select('SELECT alias FROM memory_person_aliases WHERE card_id=? ORDER BY alias', [

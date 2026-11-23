@@ -274,7 +274,11 @@ class CompanionMemoryOwner extends ChangeNotifier {
   }) async {
     final revision = store.archive['control_revision']! as int;
     bool current() => !_disposed && isCurrent() && store.archive['control_revision'] == revision;
-    final ranked = await embeddings.rank(store: store, characterId: characterId, query: input, isCurrent: current);
+    // Without the model rank would read every candidate only to tell [] from
+    // null; the read below is the one the selection uses, so skip the first.
+    final ranked = embeddings.knownUnavailable
+        ? null
+        : await embeddings.rank(store: store, characterId: characterId, query: input, isCurrent: current);
     if (!current()) throw const CompanionMemoryRetrievalCancelled();
     final cards = store.memoryRetrievalCandidates(characterId: characterId, input: input);
     final explicit = explicitMemoryTopics(input, cards);
@@ -292,14 +296,8 @@ class CompanionMemoryOwner extends ChangeNotifier {
     final firstDay = today.subtract(const Duration(days: 2)).toIso8601String().substring(0, 10);
     final todayKey = today.toIso8601String().substring(0, 10);
     final fixed = [
-      for (final row in store.memoryPageCards(characterId: characterId))
-        if (isMemoryContextEligible(row, nowMs: _now()) &&
-            ((row['layer'] == 'impression' && characterId != null && row['character_id'] == characterId) ||
-                (row['layer'] == 'diary' &&
-                    row['local_day'] is String &&
-                    (row['local_day']! as String).compareTo(firstDay) >= 0 &&
-                    (row['local_day']! as String).compareTo(todayKey) < 0)))
-          row,
+      for (final row in store.memoryFixedLayerCards(characterId: characterId, fromDay: firstDay, beforeDay: todayKey))
+        if (isMemoryContextEligible(row, nowMs: _now())) row,
     ];
     final diaries = fixed.where((row) => row['layer'] == 'diary').toList()
       ..sort((a, b) => (a['local_day']! as String).compareTo(b['local_day']! as String));
