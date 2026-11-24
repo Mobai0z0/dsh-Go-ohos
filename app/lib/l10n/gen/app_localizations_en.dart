@@ -3326,6 +3326,9 @@ class L10nEn extends L10n {
   String get botsTerminal => 'Terminal';
 
   @override
+  String get botsTerminalShowKeyboard => 'Show keyboard';
+
+  @override
   String get botsTerminalRename => 'Rename terminal';
 
   @override
@@ -5626,6 +5629,9 @@ class L10nEn extends L10n {
   String get companionShake3 => 'Keep that up and I\'ll start blowing bubbles!';
 
   @override
+  String get companionShakeDizzy => 'My head is spinning…';
+
+  @override
   String get companionStatusIdle => 'Daydreaming';
 
   @override
@@ -6593,20 +6599,16 @@ class L10nEn extends L10n {
   String get companionReminderSecond => 'The second one';
 
   @override
-  String get companionReminderExactMissing =>
-      'Your phone won\'t let me remind you on the dot yet, so this isn\'t set. Turn on “Alarms & reminders” in system settings.';
-
-  @override
   String get companionReminderNotificationsMissing =>
-      'Notifications are off, so this isn\'t set yet. Turn them on in system settings.';
+      'It\'s set, but notifications are off, so I can\'t reach you when it\'s time. Turn them on in system settings.';
 
   @override
   String get companionReminderChannelMissing =>
-      'Reminder notifications are turned off, so this isn\'t set yet. Turn them on in system settings.';
+      'It\'s set, but reminder notifications are turned off, so I can\'t reach you when it\'s time. Turn them on in system settings.';
 
   @override
   String get companionReminderGroupMissing =>
-      'The notification group for reminders is turned off, so this isn\'t set yet. Turn it on in system settings.';
+      'It\'s set, but the notification group for reminders is turned off, so I can\'t reach you when it\'s time. Turn it on in system settings.';
 
   @override
   String get companionReminderTimePassed => 'That time has already passed, so I didn\'t ring late.';
@@ -7651,11 +7653,11 @@ class L10nEn extends L10n {
 
   @override
   String get companionScreenVisionHint =>
-      'Send a screen image up to 512 pixels on its longest side to the model you choose; the image is not saved';
+      'Images are checked for privacy with on-device text recognition (OCR) first, so it needs to be on. Up to 512 px on the longest side, never saved';
 
   @override
   String get companionScreenVisionTextOnly =>
-      'The current screen capture can provide text only. Images need accessibility capture with verified window sources';
+      'This capture method only reads text; images need accessibility capture with on-device text recognition on';
 
   @override
   String get companionScreenVisionModel => 'Model for screen images';
@@ -7665,14 +7667,14 @@ class L10nEn extends L10n {
 
   @override
   String get companionScreenVisionAvailable =>
-      'The selected model can receive qualified screen images up to 512 pixels; images are not saved';
+      'The selected model can see images; they\'re sent only while on-device text recognition is on, and never saved';
 
   @override
-  String get companionScreenVisionChecking => 'Checking the selected model; screen images are not active yet';
+  String get companionScreenVisionChecking => 'Checking the selected model; text only for now';
 
   @override
   String get companionScreenVisionUnavailable =>
-      'Images are unavailable for this connection or model; screen observation uses text';
+      'This connection or model can\'t take images, so screen watching uses text';
 
   @override
   String get companionScreenFrequency => 'How often she speaks';
@@ -7852,6 +7854,29 @@ class L10nEn extends L10n {
 
   @override
   String get companionRawEraseGone => 'Too late this time; the original words are still here.';
+
+  @override
+  String get companionSetupWorkshop => 'Find one in the Workshop';
+
+  @override
+  String get companionRosterTitle => 'Companions';
+
+  @override
+  String get companionRosterHere => 'In the room';
+
+  @override
+  String get companionRosterAdd => 'Add a companion';
+
+  @override
+  String get companionRosterBring => 'Bring her into the room';
+
+  @override
+  String get companionRosterRemove => 'Remove from this phone';
+
+  @override
+  String companionRosterRemoveConfirm(String name) {
+    return 'Remove “$name” from this phone? Her files are deleted; memories and reminders stay.';
+  }
 
   @override
   String get automaticDiagnosticsRecover => 'Recover local records';
